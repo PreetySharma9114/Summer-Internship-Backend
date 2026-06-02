@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-
+import { ResponseUtil } from "../../shared/utils/response.util.js";
 import { AuthService } from "./auth.service.js";
 const authService = new AuthService();
 export const AuthController = {
@@ -13,7 +13,7 @@ export const AuthController = {
     try {
       const result = await authService.register(req.body);
 
-      return res.status(201).json(result);
+      return ResponseUtil.success(res, result, "OTP sent successfully", 201);
     } catch (error) {
       next(error);
     }
@@ -28,7 +28,7 @@ export const AuthController = {
     try {
       const result = await authService.verifyOtp(req.body);
 
-      return res.status(200).json(result);
+      return ResponseUtil.success(res, result, "OTP verified successfully");
     } catch (error) {
       next(error);
     }
@@ -43,7 +43,7 @@ export const AuthController = {
     try {
       const result = await authService.createPassword(req.body);
 
-      return res.status(200).json(result);
+      return ResponseUtil.success(res, result, "Password created successfully");
     } catch (error) {
       next(error);
     }
@@ -58,7 +58,7 @@ export const AuthController = {
     try {
       const result = await authService.login(req.body);
 
-      return res.status(200).json(result);
+      return ResponseUtil.success(res, result, "Login successful");
     } catch (error) {
       next(error);
     }
@@ -73,7 +73,7 @@ export const AuthController = {
     try {
       const result = await authService.resendOtp(req.body.id);
 
-      return res.status(200).json(result);
+      return ResponseUtil.success(res, result, "OTP resent successfully");
     } catch (error) {
       next(error);
     }

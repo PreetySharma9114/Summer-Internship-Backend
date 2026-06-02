@@ -1,11 +1,6 @@
-import {
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class InfluencerProfileDto {
-
   @IsString()
   @IsNotEmpty()
   fullName!: string;
@@ -30,7 +25,9 @@ export class InfluencerProfileDto {
   @IsOptional()
   youtubeUsername?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  followersCount!: string;
+  @IsOptional()
+  instagramFollowers?: number;
+
+  @IsOptional()
+  youtubeFollowers?: number;
 }

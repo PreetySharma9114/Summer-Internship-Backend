@@ -12,8 +12,9 @@ export interface IInfluencerProfile {
   instagramUsername?: string;
 
   youtubeUsername?: string;
+  instagramFollowers?: number;
 
-  followersCount: string;
+  youtubeFollowers?: number;
 
   profileImage?: string;
 }

@@ -26,9 +26,20 @@ export class AuthService {
     const existingUser = await this.userRepo.findByEmail(data.email);
 
     if (existingUser) {
+      if (!existingUser.password) {
+        return {
+          message: "Continue registration",
+
+          id: String(existingUser._id),
+
+          isOtpVerified: existingUser.isOtpVerified,
+
+          profileStatus: existingUser.profileStatus,
+        };
+      }
+
       throw new ConflictError("User already exists");
     }
-
     const otp = generateOtp();
 
     const otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000);
@@ -56,7 +67,7 @@ export class AuthService {
 
   verifyOtp = async (data: VerifyOtpDto) => {
     const user = await this.userRepo.findById(data.id);
-    console.log(user?.otp,data.otp)
+    console.log(user?.otp, data.otp);
     if (!user) {
       throw new NotFoundError("User not found");
     }

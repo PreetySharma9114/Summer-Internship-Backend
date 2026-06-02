@@ -1,49 +1,31 @@
-import { Profile }
-from '../profile.model.js';
-
+import { InfluencerProfile } from "../models/influencer-profile.model.js";
+import { BrandProfile } from "../models/brand-profile.model.js";
 export class ProfileRepository {
-
-  static async upsertInfluencerProfile(
-    userId: string,
-    data: object,
-  ) {
-
-    return Profile.findOneAndUpdate(
+  async upsertInfluencerProfile(userId: string, data: object) {
+    return InfluencerProfile.findOneAndUpdate(
       {
         userId,
       },
       {
         ...data,
-
-        profileType:
-          'INFLUENCER',
       },
       {
         new: true,
-
         upsert: true,
       },
     );
   }
 
-  static async upsertBrandProfile(
-    userId: string,
-    data: object,
-  ) {
-
-    return Profile.findOneAndUpdate(
+  async upsertBrandProfile(userId: string, data: object) {
+    return BrandProfile.findOneAndUpdate(
       {
         userId,
       },
       {
         ...data,
-
-        profileType:
-          'BRAND',
       },
       {
         new: true,
-
         upsert: true,
       },
     );
