@@ -8,7 +8,7 @@ import morgan from "morgan";
 
 import rateLimit from "express-rate-limit";
 import path from "path";
-
+import { UploadRouter } from "./modules/upload/upload.routes.js";
 import { AuthRouter } from "./modules/auth/auth.routes.js";
 
 import { errorMiddleware } from "./shared/middlewares/error.middleware.js";
@@ -36,9 +36,11 @@ app.use(
     max: 100,
   }),
 );
-
 app.use("/api/auth", AuthRouter);
+
 app.use("/api/profile", ProfileRouter);
+
+app.use("/api/upload", UploadRouter);
 app.get("/health", (_req, res) => {
   res.json({
     status: "ok",

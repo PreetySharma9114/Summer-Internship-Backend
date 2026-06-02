@@ -15,11 +15,9 @@ export class ProfileService {
   static async completeInfluencerProfile(
     userId: string,
     data: InfluencerProfileDto,
-    profileImage?: string,
   ) {
     const profile = await this.profileRepo.upsertInfluencerProfile(userId, {
       ...data,
-      profileImage,
     });
 
     await this.userRepository.updateProfileStatus(userId, ProfileStatus.COMPLETE);
@@ -30,11 +28,9 @@ export class ProfileService {
   static async completeBrandProfile(
     userId: string,
     data: BrandProfileDto,
-    logo?: string,
   ) {
     const profile = await this.profileRepo.upsertBrandProfile(userId, {
       ...data,
-      logo,
     });
 
     await this.userRepository.updateProfileStatus(

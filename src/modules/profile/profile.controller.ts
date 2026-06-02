@@ -9,14 +9,11 @@ export class ProfileController {
     res: Response,
   ): Promise<Response> {
     const userId = req.user.id;
-    const profileImage = req.file?.path;
 
     const profile = await ProfileService.completeInfluencerProfile(
       userId,
       req.body,
-      profileImage,
     );
-
     return ResponseUtil.success(res, profile, "Influencer profile completed");
   }
 
@@ -25,13 +22,7 @@ export class ProfileController {
     res: Response,
   ): Promise<Response> {
     const userId = req.user.id;
-    const logo = req.file?.path;
-
-    const profile = await ProfileService.completeBrandProfile(
-      userId,
-      req.body,
-      logo,
-    );
+    const profile = await ProfileService.completeBrandProfile(userId, req.body);
 
     return ResponseUtil.success(res, profile, "Brand profile completed");
   }

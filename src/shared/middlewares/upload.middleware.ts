@@ -1,18 +1,10 @@
 import multer from "multer";
 import path from "path";
-import fs from "fs";
 
-const logoPath = "uploads/logos";
+import { UploadService } from "../services/upload.services.js";
 
-const profileImagePath = "uploads/profile-images";
+UploadService.ensureUploadDirectories();
 
-if (!fs.existsSync(logoPath)) {
-  fs.mkdirSync(logoPath, { recursive: true });
-}
-
-if (!fs.existsSync(profileImagePath)) {
-  fs.mkdirSync(profileImagePath, { recursive: true });
-}
 const storage = multer.diskStorage({
   destination(req, file, cb) {
     if (file.fieldname === "logo") {
@@ -33,8 +25,31 @@ const storage = multer.diskStorage({
   },
 });
 
+const fileFilter: multer.Options["fileFilter"] = (
+  req,
+  file,
+  cb,
+) => {
+  const allowedTypes = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+  ];
+
+  if (!allowedTypes.includes(file.mimetype)) {
+    cb(new Error("Only image files are allowed"));
+
+    return;
+  }
+
+  cb(null, true);
+};
+
 export const upload = multer({
   storage,
+
+  fileFilter,
 
   limits: {
     fileSize: 5 * 1024 * 1024,

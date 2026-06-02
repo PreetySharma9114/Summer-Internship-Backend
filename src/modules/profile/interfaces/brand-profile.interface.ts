@@ -1,5 +1,5 @@
-export interface IBrandProfile {
-  userId: string;
+import { IProfile } from "./profile.interface.js";
+export interface IBrandProfile extends IProfile {
 
   brandName: string;
 

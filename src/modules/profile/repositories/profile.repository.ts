@@ -1,32 +1,38 @@
-import { InfluencerProfile } from "../models/influencer-profile.model.js";
-import { BrandProfile } from "../models/brand-profile.model.js";
+import { Profile } from "../models/profile.model.js";
+
+import { UserRole } from "../../../common/enums/user-role.enum.js";
+
 export class ProfileRepository {
-  async upsertInfluencerProfile(userId: string, data: object) {
-    return InfluencerProfile.findOneAndUpdate(
-      {
-        userId,
-      },
+  async upsertInfluencerProfile(
+    userId: string,
+    data: object,
+  ) {
+    return Profile.findOneAndUpdate(
+      { userId },
       {
         ...data,
+        profileType: UserRole.INFLUENCER,
       },
       {
-        new: true,
         upsert: true,
+        returnDocument: "after",
       },
     );
   }
 
-  async upsertBrandProfile(userId: string, data: object) {
-    return BrandProfile.findOneAndUpdate(
-      {
-        userId,
-      },
+  async upsertBrandProfile(
+    userId: string,
+    data: object,
+  ) {
+    return Profile.findOneAndUpdate(
+      { userId },
       {
         ...data,
+        profileType: UserRole.BRAND,
       },
       {
-        new: true,
         upsert: true,
+        returnDocument: "after",
       },
     );
   }

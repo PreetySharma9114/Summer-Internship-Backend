@@ -30,4 +30,7 @@ export class InfluencerProfileDto {
 
   @IsOptional()
   youtubeFollowers?: number;
+  @IsString()
+  @IsOptional()
+  profileImage?: string;
 }

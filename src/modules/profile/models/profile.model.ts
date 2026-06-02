@@ -1,9 +1,8 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-export interface IProfile extends Document {
-  userId: mongoose.Types.ObjectId;
-  profileType: "INFLUENCER" | "BRAND";
-}
+import { UserRole } from "../../../common/enums/user-role.enum.js";
+
+import { IProfile } from "../interfaces/profile.interface.js";
 
 const profileSchema = new Schema<IProfile>(
   {
@@ -17,7 +16,7 @@ const profileSchema = new Schema<IProfile>(
     profileType: {
       type: String,
       required: true,
-      enum: ["INFLUENCER", "BRAND"],
+      enum: Object.values(UserRole),
     },
   },
   {

@@ -21,4 +21,8 @@ export class BrandProfileDto {
   @IsString()
   @IsOptional()
   instagramUsername?: string;
+
+  @IsString()
+  @IsOptional()
+  logo?: string;
 }
