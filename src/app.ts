@@ -13,6 +13,9 @@ import { AuthRouter } from "./modules/auth/auth.routes.js";
 
 import { errorMiddleware } from "./shared/middlewares/error.middleware.js";
 import { ProfileRouter } from "./modules/profile/profile.routes.js";
+import { CampaignRouter } from "./modules/campaign/campaign.routes.js";
+import { ApplicationRouter } from "./modules/applications/application.routes.js";
+
 const app = express();
 
 app.use(helmet());
@@ -39,6 +42,7 @@ app.use(
 app.use("/api/auth", AuthRouter);
 
 app.use("/api/profile", ProfileRouter);
+app.use("/api/campaigns", CampaignRouter);
 
 app.use("/api/upload", UploadRouter);
 app.get("/health", (_req, res) => {
@@ -54,7 +58,7 @@ app.use((_req, res) =>
     error: "Route not found",
   }),
 );
-
+app.use("/api/applications", ApplicationRouter);
 app.use(errorMiddleware);
 
 export default app;

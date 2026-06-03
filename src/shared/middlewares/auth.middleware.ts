@@ -26,10 +26,13 @@ export const authenticate = (
   }
 
   const token = authHeader.split(" ")[1];
+  try {
+    const decoded = jwt.verify(token, env.JWT_SECRET) as JwtPayload;
 
-  const decoded = jwt.verify(token, env.JWT_SECRET) as JwtPayload;
+    req.user = decoded;
 
-  req.user = decoded;
-
-  next();
+    next();
+  } catch {
+    throw new UnauthorizedError("Invalid token");
+  }
 };

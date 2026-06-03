@@ -1,29 +1,43 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
 import { ProfileService } from "./profile.service.js";
+
 import { ResponseUtil } from "../../shared/utils/response.util.js";
 
-export class ProfileController {
-  static async completeInfluencerProfile(
+const profileService = new ProfileService();
+
+export const ProfileController = {
+  completeInfluencerProfile: async (
     req: Request,
     res: Response,
-  ): Promise<Response> {
-    const userId = req.user.id;
+    next: NextFunction,
+  ) => {
+    try {
+      const profile = await profileService.completeInfluencerProfile(
+        req.user.id,
+        req.body,
+      );
 
-    const profile = await ProfileService.completeInfluencerProfile(
-      userId,
-      req.body,
-    );
-    return ResponseUtil.success(res, profile, "Influencer profile completed");
-  }
+      return ResponseUtil.success(res, profile, "Influencer profile completed");
+    } catch (error) {
+      next(error);
+    }
+  },
 
-  static async completeBrandProfile(
+  completeBrandProfile: async (
     req: Request,
     res: Response,
-  ): Promise<Response> {
-    const userId = req.user.id;
-    const profile = await ProfileService.completeBrandProfile(userId, req.body);
+    next: NextFunction,
+  ) => {
+    try {
+      const profile = await profileService.completeBrandProfile(
+        req.user.id,
+        req.body,
+      );
 
-    return ResponseUtil.success(res, profile, "Brand profile completed");
-  }
-}
+      return ResponseUtil.success(res, profile, "Brand profile completed");
+    } catch (error) {
+      next(error);
+    }
+  },
+};

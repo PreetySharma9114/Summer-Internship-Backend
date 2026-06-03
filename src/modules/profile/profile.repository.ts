@@ -1,12 +1,9 @@
-import { Profile } from "../models/profile.model.js";
+import { Profile } from "./models/profile.model.js";
 
-import { UserRole } from "../../../common/enums/user-role.enum.js";
+import { UserRole } from "../../common/enums/user-role.enum.js";
 
 export class ProfileRepository {
-  async upsertInfluencerProfile(
-    userId: string,
-    data: object,
-  ) {
+  async upsertInfluencerProfile(userId: string, data: object) {
     return Profile.findOneAndUpdate(
       { userId },
       {
@@ -20,10 +17,7 @@ export class ProfileRepository {
     );
   }
 
-  async upsertBrandProfile(
-    userId: string,
-    data: object,
-  ) {
+  async upsertBrandProfile(userId: string, data: object) {
     return Profile.findOneAndUpdate(
       { userId },
       {
@@ -36,4 +30,9 @@ export class ProfileRepository {
       },
     );
   }
+  findByUserId = async (userId: string) => {
+    return Profile.findOne({
+      userId,
+    });
+  };
 }
