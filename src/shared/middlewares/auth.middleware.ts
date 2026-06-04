@@ -30,7 +30,7 @@ export const authenticate = (
     const decoded = jwt.verify(token, env.JWT_SECRET) as JwtPayload;
 
     req.user = decoded;
-
+    console.log("TOKEN USER:", decoded);
     next();
   } catch {
     throw new UnauthorizedError("Invalid token");

@@ -1,20 +1,20 @@
 import { Router } from "express";
 
 import { CampaignController } from "./campaign.controller.js";
+import { validate } from "../../shared/middlewares/validation.middleware.js";
 
+import {
+  createCampaignSchema,
+  updateCampaignSchema,
+} from "./dto/campaign.dto.js";
 import { authenticate } from "../../shared/middlewares/auth.middleware.js";
-
-import { validateDto } from "../../shared/middlewares/validation.middleware.js";
-
-import { CreateCampaignDto } from "./dto/create-campaign.dto.js";
 import { ApplicationController } from "../applications/application.controller.js";
-import { UpdateCampaignDto } from "./dto/update-campaigns.dto.js";
 export const CampaignRouter = Router();
 
 CampaignRouter.post(
   "/",
   authenticate,
-  validateDto(CreateCampaignDto),
+  validate(createCampaignSchema),
   CampaignController.createCampaign,
 );
 
@@ -30,7 +30,7 @@ CampaignRouter.get("/:id", authenticate, CampaignController.getCampaignById);
 CampaignRouter.patch(
   "/:id",
   authenticate,
-  validateDto(UpdateCampaignDto),
+  validate(updateCampaignSchema),
   CampaignController.updateCampaign,
 );
 CampaignRouter.delete("/:id", authenticate, CampaignController.deleteCampaign);

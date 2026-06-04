@@ -1,10 +1,11 @@
-import z from "zod";
+import { z } from "zod";
 
 import { UserRole } from "../../../common/enums/user-role.enum.js";
+
 export const registerDto = z.object({
   email: z.email(),
 
-  role: z.enum(UserRole),
+  role: z.nativeEnum(UserRole),
 });
 
 export type RegisterDto = z.infer<typeof registerDto>;
@@ -23,7 +24,6 @@ export const createPasswordDto = z
 
     password: z
       .string()
-
       .min(8)
       .regex(/[A-Z]/, "One uppercase required")
       .regex(/[a-z]/, "One lowercase required")
@@ -32,13 +32,10 @@ export const createPasswordDto = z
 
     confirmPassword: z.string(),
   })
-
   .refine(
     (data) => data.password === data.confirmPassword,
-
     {
       message: "Passwords do not match",
-
       path: ["confirmPassword"],
     },
   );
@@ -52,3 +49,9 @@ export const loginDto = z.object({
 });
 
 export type LoginDto = z.infer<typeof loginDto>;
+
+export const resendOtpDto = z.object({
+  id: z.string(),
+});
+
+export type ResendOtpDto = z.infer<typeof resendOtpDto>;

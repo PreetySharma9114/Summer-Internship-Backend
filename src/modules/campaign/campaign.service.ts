@@ -6,9 +6,7 @@ import { UserRepository } from "../user/user.repository.js";
 
 import { CampaignRepository } from "./campaign.repository.js";
 
-import { CreateCampaignDto } from "./dto/create-campaign.dto.js";
-import { UpdateCampaignDto } from "./dto/update-campaigns.dto.js";
-
+import { CreateCampaignDto, UpdateCampaignDto } from "./dto/campaign.dto.js";
 export class CampaignService {
   private campaignRepository = new CampaignRepository();
 

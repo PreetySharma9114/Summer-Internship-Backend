@@ -45,6 +45,7 @@ app.use("/api/profile", ProfileRouter);
 app.use("/api/campaigns", CampaignRouter);
 
 app.use("/api/upload", UploadRouter);
+app.use("/api/applications", ApplicationRouter);
 app.get("/health", (_req, res) => {
   res.json({
     status: "ok",
@@ -58,7 +59,6 @@ app.use((_req, res) =>
     error: "Route not found",
   }),
 );
-app.use("/api/applications", ApplicationRouter);
 app.use(errorMiddleware);
 
 export default app;

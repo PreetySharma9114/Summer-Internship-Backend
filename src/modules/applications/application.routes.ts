@@ -2,11 +2,11 @@ import { Router } from "express";
 
 import { authenticate } from "../../shared/middlewares/auth.middleware.js";
 
-import { validateDto } from "../../shared/middlewares/validation.middleware.js";
-
-import { UpdateApplicationStatusDto } from "./dto/update-application-status.dto.js";
+import { validate } from "../../shared/middlewares/validation.middleware.js";
 
 import { ApplicationController } from "./application.controller.js";
+
+import { updateApplicationStatusSchema } from "./dto/application.dto.js";
 
 export const ApplicationRouter = Router();
 
@@ -19,6 +19,6 @@ ApplicationRouter.get(
 ApplicationRouter.patch(
   "/:id/status",
   authenticate,
-  validateDto(UpdateApplicationStatusDto),
+  validate(updateApplicationStatusSchema),
   ApplicationController.updateApplicationStatus,
 );

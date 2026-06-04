@@ -1,9 +1,5 @@
 import { ProfileStatus } from "../../common/enums/profile-status.enum.js";
-
-import { InfluencerProfileDto } from "./dto/influencer-profile.dto.js";
-
-import { BrandProfileDto } from "./dto/brand-profile.dto.js";
-
+import { InfluencerProfileDto, BrandProfileDto } from "./dto/profile.dto.js";
 import { UserRepository } from "../user/user.repository.js";
 
 import { ProfileRepository } from "./profile.repository.js";

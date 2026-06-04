@@ -2,56 +2,44 @@ import { Router } from "express";
 
 import { AuthController } from "./auth.controller.js";
 
-import { RegisterDto } from "./dto/register.dto.js";
+import {
+  registerDto,
+  verifyOtpDto,
+  resendOtpDto,
+  createPasswordDto,
+  loginDto,
+} from "./dto/auth.dto.js";
 
-import { VerifyOtpDto } from "./dto/verify-otp.dto.js";
-
-import { ResendOtpDto } from "./dto/resend-otp.dto.js";
-
-import { CreatePasswordDto } from "./dto/create-password.dto.js";
-
-import { LoginDto } from "./dto/login.dto.js";
-
-import { validateDto } from "../../shared/middlewares/validation.middleware.js";
+import { validate } from "../../shared/middlewares/validation.middleware.js";
 
 export const AuthRouter = Router();
 
 AuthRouter.post(
   "/register",
-
-  validateDto(RegisterDto),
-
+  validate(registerDto),
   AuthController.register,
 );
 
 AuthRouter.post(
   "/verify-otp",
-
-  validateDto(VerifyOtpDto),
-
+  validate(verifyOtpDto),
   AuthController.verifyOtp,
 );
 
 AuthRouter.post(
   "/resend-otp",
-
-  validateDto(ResendOtpDto),
-
+  validate(resendOtpDto),
   AuthController.resendOtp,
 );
 
 AuthRouter.post(
   "/create-password",
-
-  validateDto(CreatePasswordDto),
-
+  validate(createPasswordDto),
   AuthController.createPassword,
 );
 
 AuthRouter.post(
   "/login",
-
-  validateDto(LoginDto),
-
+  validate(loginDto),
   AuthController.login,
 );
