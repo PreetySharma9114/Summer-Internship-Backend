@@ -12,8 +12,8 @@ export class CampaignService {
 
   private userRepository = new UserRepository();
 
-  createCampaign = async (brandId: string, data: CreateCampaignDto) => {
-    const user = await this.userRepository.findById(brandId);
+  createCampaign = async (userId: string, data: CreateCampaignDto) => {
+    const user = await this.userRepository.findById(userId);
 
     if (!user || user.role !== UserRole.BRAND) {
       throw new AppError("Only brands can create campaigns", 403);
@@ -21,7 +21,7 @@ export class CampaignService {
 
     return this.campaignRepository.create({
       ...data,
-      brandId,
+      brandId: userId,
     });
   };
 
@@ -29,8 +29,8 @@ export class CampaignService {
     return this.campaignRepository.findAll();
   };
 
-  getBrandCampaigns = async (brandId: string) => {
-    return this.campaignRepository.findByBrandId(brandId);
+  getBrandCampaigns = async (userId: string) => {
+    return this.campaignRepository.findByBrandId(userId);
   };
   getCampaignById = async (campaignId: string) => {
     const campaign = await this.campaignRepository.findById(campaignId);

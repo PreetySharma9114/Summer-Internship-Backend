@@ -14,7 +14,7 @@ export const ProfileController = {
   ) => {
     try {
       const profile = await profileService.completeInfluencerProfile(
-        req.user.id,
+        req.user!.id,
         req.body,
       );
 
@@ -31,7 +31,7 @@ export const ProfileController = {
   ) => {
     try {
       const profile = await profileService.completeBrandProfile(
-        req.user.id,
+        req.user!.id,
         req.body,
       );
 

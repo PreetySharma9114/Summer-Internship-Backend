@@ -2,10 +2,7 @@ import fs from "fs";
 
 export class UploadService {
   static ensureUploadDirectories(): void {
-    const directories = [
-      "uploads/logos",
-      "uploads/profile-images",
-    ];
+    const directories = ["uploads/logos", "uploads/profile-images"];
 
     directories.forEach((directory) => {
       if (!fs.existsSync(directory)) {
@@ -16,11 +13,9 @@ export class UploadService {
     });
   }
 
-  static uploadFile(
-    file: Express.Multer.File,
-  ) {
+  static uploadFile(file: Express.Multer.File) {
     return {
-      url: file.path,
+      url: file.path.replace(/\\/g, "/"),
     };
   }
 }

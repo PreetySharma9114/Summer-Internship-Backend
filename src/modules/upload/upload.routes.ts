@@ -8,9 +8,10 @@ import { UploadController } from "./upload.controller.js";
 
 export const UploadRouter = Router();
 
+UploadRouter.use(authenticate);
+
 UploadRouter.post(
   "/",
-  authenticate,
   upload.single("file"),
   UploadController.upload,
 );

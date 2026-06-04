@@ -7,18 +7,17 @@ import { validate } from "../../shared/middlewares/validation.middleware.js";
 import { ApplicationController } from "./application.controller.js";
 
 import { updateApplicationStatusSchema } from "./dto/application.dto.js";
-
 export const ApplicationRouter = Router();
+
+ApplicationRouter.use(authenticate);
 
 ApplicationRouter.get(
   "/my",
-  authenticate,
   ApplicationController.getMyApplications,
 );
 
 ApplicationRouter.patch(
   "/:id/status",
-  authenticate,
   validate(updateApplicationStatusSchema),
   ApplicationController.updateApplicationStatus,
 );

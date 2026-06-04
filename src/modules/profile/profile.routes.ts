@@ -13,16 +13,16 @@ import {
 
 export const ProfileRouter = Router();
 
+ProfileRouter.use(authenticate);
+
 ProfileRouter.post(
   "/influencer",
-  authenticate,
   validate(influencerProfileSchema),
   ProfileController.completeInfluencerProfile,
 );
 
 ProfileRouter.post(
   "/brand",
-  authenticate,
   validate(brandProfileSchema),
   ProfileController.completeBrandProfile,
 );

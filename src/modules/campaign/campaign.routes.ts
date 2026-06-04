@@ -7,35 +7,41 @@ import {
   createCampaignSchema,
   updateCampaignSchema,
 } from "./dto/campaign.dto.js";
+
 import { authenticate } from "../../shared/middlewares/auth.middleware.js";
+
 import { ApplicationController } from "../applications/application.controller.js";
+
 export const CampaignRouter = Router();
+
+CampaignRouter.use(authenticate);
 
 CampaignRouter.post(
   "/",
-  authenticate,
   validate(createCampaignSchema),
   CampaignController.createCampaign,
 );
 
-CampaignRouter.get("/", authenticate, CampaignController.getCampaigns);
+CampaignRouter.get("/", CampaignController.getCampaigns);
 
-CampaignRouter.get("/my", authenticate, CampaignController.getMyCampaigns);
+CampaignRouter.get("/my", CampaignController.getMyCampaigns);
+
 CampaignRouter.post(
   "/:campaignId/apply",
-  authenticate,
   ApplicationController.applyToCampaign,
 );
-CampaignRouter.get("/:id", authenticate, CampaignController.getCampaignById);
+
+CampaignRouter.get(
+  "/:campaignId/applications",
+  ApplicationController.getCampaignApplications,
+);
+
+CampaignRouter.get("/:id", CampaignController.getCampaignById);
+
 CampaignRouter.patch(
   "/:id",
-  authenticate,
   validate(updateCampaignSchema),
   CampaignController.updateCampaign,
 );
-CampaignRouter.delete("/:id", authenticate, CampaignController.deleteCampaign);
-CampaignRouter.get(
-  "/:campaignId/applications",
-  authenticate,
-  ApplicationController.getCampaignApplications,
-);
+
+CampaignRouter.delete("/:id", CampaignController.deleteCampaign);

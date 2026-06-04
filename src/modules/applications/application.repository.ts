@@ -1,3 +1,4 @@
+import { ApplicationStatus } from "../../common/enums/application-status.enum.js";
 import { Application } from "./application.model.js";
 
 export class ApplicationRepository {
@@ -33,7 +34,7 @@ export class ApplicationRepository {
     return Application.findById(id);
   };
 
-  updateStatus = async (id: string, status: string) => {
+  updateStatus = async (id: string, status: ApplicationStatus) => {
     return Application.findByIdAndUpdate(
       id,
       {

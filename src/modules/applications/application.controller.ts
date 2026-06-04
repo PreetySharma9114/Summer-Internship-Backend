@@ -12,7 +12,7 @@ export const ApplicationController = {
       const campaignId = req.params.campaignId as string;
 
       const application = await applicationService.applyToCampaign(
-        req.user.id,
+        req.user!.id,
         campaignId,
       );
 
@@ -36,7 +36,7 @@ export const ApplicationController = {
       const campaignId = req.params.campaignId as string;
 
       const applications =
-        await applicationService.getCampaignApplications(campaignId, req.user.id);
+        await applicationService.getCampaignApplications(campaignId, req.user!.id);
       return ResponseUtil.success(
         res,
         applications,
@@ -54,7 +54,7 @@ export const ApplicationController = {
   ) => {
     try {
       const applications = await applicationService.getMyApplications(
-        req.user.id,
+        req.user!.id,
       );
 
       return ResponseUtil.success(
@@ -78,7 +78,7 @@ export const ApplicationController = {
       const application = await applicationService.updateApplicationStatus(
         applicationId,
         req.body.status,
-        req.user.id,
+        req.user!.id,
       );
       
       return ResponseUtil.success(

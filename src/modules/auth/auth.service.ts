@@ -52,8 +52,6 @@ export class AuthService {
       otpExpiresAt,
     });
 
-    console.log(`OTP: ${otp}`);
-
     return {
       message: "OTP sent successfully",
 
@@ -179,10 +177,8 @@ export class AuthService {
       otpExpiresAt,
     });
 
-    console.log("Resend OTP:", otp);
-
     return {
-      succes: true,
+      success: true,
       message: "OTP resent successfully",
     };
   };

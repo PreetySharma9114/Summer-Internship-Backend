@@ -10,7 +10,7 @@ export const CampaignController = {
   createCampaign: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const campaign = await campaignService.createCampaign(
-        req.user.id,
+        req.user!.id,
         req.body,
       );
 
@@ -41,7 +41,7 @@ export const CampaignController = {
 
   getMyCampaigns: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const campaigns = await campaignService.getBrandCampaigns(req.user.id);
+      const campaigns = await campaignService.getBrandCampaigns(req.user!.id);
 
       return ResponseUtil.success(
         res,
@@ -73,7 +73,7 @@ export const CampaignController = {
 
       const campaign = await campaignService.updateCampaign(
         campaignId,
-        req.user.id,
+        req.user!.id,
         req.body,
       );
 
@@ -90,7 +90,7 @@ export const CampaignController = {
     try {
       const campaignId = req.params.id as string;
 
-      await campaignService.deleteCampaign(campaignId, req.user.id);
+      await campaignService.deleteCampaign(campaignId, req.user!.id);
 
       return ResponseUtil.success(res, null, "Campaign deleted successfully");
     } catch (error) {

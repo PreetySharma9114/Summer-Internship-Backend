@@ -51,7 +51,7 @@ export class ApplicationService {
     }
 
     return this.applicationRepository.create({
-      influencerId: profile._id,
+      influencerId: profile.id,
       campaignId,
       status: ApplicationStatus.PENDING,
     });
