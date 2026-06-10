@@ -58,6 +58,9 @@ export class ApplicationService {
   };
 
   getCampaignApplications = async (campaignId: string, userId: string) => {
+    console.log("campaignId:", campaignId);
+
+    console.log("userId:", userId);
     const campaign = await this.campaignRepository.findById(campaignId);
 
     if (!campaign) {
