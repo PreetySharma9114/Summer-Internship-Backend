@@ -6,46 +6,29 @@ export class CampaignRepository {
     return Campaign.create(data);
   };
 
-findAll = async () => {
-  const campaigns = await Campaign.find();
+  findAll = async () => {
+    return Campaign.find().populate("brandId");
+  };
 
-  const result = [];
+  findById = async (campaignId: string) => {
+    const campaign = await Campaign.findById(campaignId);
 
-  for (const campaign of campaigns) {
+    if (!campaign) {
+      return null;
+    }
+
     const brandProfile = await BrandProfile.findOne({
       userId: campaign.brandId,
     });
 
-    result.push({
+    return {
       ...campaign.toObject(),
       brand: {
         brandName: brandProfile?.brandName,
         logo: brandProfile?.logo,
       },
-    });
-  }
-
-  return result;
-};
-findById = async (campaignId: string) => {
-  const campaign = await Campaign.findById(campaignId);
-
-  if (!campaign) {
-    return null;
-  }
-
-  const brandProfile = await BrandProfile.findOne({
-    userId: campaign.brandId,
-  });
-
-  return {
-    ...campaign.toObject(),
-    brand: {
-      brandName: brandProfile?.brandName,
-      logo: brandProfile?.logo,
-    },
+    };
   };
-};
 
   findByBrandId = async (brandId: string) => {
     return Campaign.find({
