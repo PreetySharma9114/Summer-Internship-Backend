@@ -58,9 +58,6 @@ export class ApplicationService {
   };
 
   getCampaignApplications = async (campaignId: string, userId: string) => {
-    console.log("campaignId:", campaignId);
-
-    console.log("userId:", userId);
     const campaign = await this.campaignRepository.findById(campaignId);
 
     if (!campaign) {
@@ -118,13 +115,14 @@ export class ApplicationService {
       }
 
       const updatedCampaign =
-        await this.campaignRepository.incrementFilledSlots(campaign.id);
-
+        await this.campaignRepository.incrementFilledSlots(
+          campaign._id.toString(),
+        );
       if (
         updatedCampaign &&
         updatedCampaign.filledSlots >= updatedCampaign.totalSlots
       ) {
-        await this.campaignRepository.closeCampaign(campaign.id);
+        await this.campaignRepository.closeCampaign(campaign._id.toString());
       }
     }
 

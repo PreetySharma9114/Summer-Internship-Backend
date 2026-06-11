@@ -19,10 +19,12 @@ export const InfluencerProfile = Profile.discriminator(
       required: true,
     },
 
-    niche: {
-      type: String,
-      required: true,
-    },
+    niches: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
 
     instagramUsername: String,
 

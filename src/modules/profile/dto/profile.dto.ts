@@ -7,8 +7,7 @@ export const influencerProfileSchema = z.object({
 
   bio: z.string().min(1),
 
-  niche: z.string().min(1),
-
+  niches: z.array(z.string()).min(1),
   instagramUsername: z.string().optional(),
 
   youtubeUsername: z.string().optional(),
@@ -36,5 +35,4 @@ export const brandProfileSchema = z.object({
   logo: z.string().optional(),
 });
 
-export type BrandProfileDto =
-  z.infer<typeof brandProfileSchema>;
+export type BrandProfileDto = z.infer<typeof brandProfileSchema>;
