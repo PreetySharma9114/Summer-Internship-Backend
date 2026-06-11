@@ -6,25 +6,27 @@ export class CampaignRepository {
     return Campaign.create(data);
   };
 
-  findAll = async () => {
-    const campaigns = await Campaign.find();
+findAll = async () => {
+  const campaigns = await Campaign.find();
 
-    return Promise.all(
-      campaigns.map(async (campaign) => {
-        const brandProfile = await BrandProfile.findOne({
-          userId: campaign.brandId,
-        });
+  const result = [];
 
-        return {
-          ...campaign.toObject(),
-          brand: {
-            brandName: brandProfile?.brandName,
-            logo: brandProfile?.logo,
-          },
-        };
-      }),
-    );
-  };
+  for (const campaign of campaigns) {
+    const brandProfile = await BrandProfile.findOne({
+      userId: campaign.brandId,
+    });
+
+    result.push({
+      ...campaign.toObject(),
+      brand: {
+        brandName: brandProfile?.brandName,
+        logo: brandProfile?.logo,
+      },
+    });
+  }
+
+  return result;
+};
 findById = async (campaignId: string) => {
   const campaign = await Campaign.findById(campaignId);
 
