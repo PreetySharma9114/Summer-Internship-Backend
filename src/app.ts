@@ -52,13 +52,12 @@ app.get("/health", (_req, res) => {
   });
 });
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
-app.use((_req, res) =>
+app.use((_req, res) => {
   res.status(404).json({
     success: false,
-
-    error: "Route not found",
-  }),
-);
+    message: "Route not found",
+  });
+});
 app.use(errorMiddleware);
 
 export default app;

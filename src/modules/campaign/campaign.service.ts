@@ -1,24 +1,13 @@
-import { UserRole } from "../../common/enums/user-role.enum.js";
-
 import { AppError } from "../../shared/utils/appError.js";
-
-import { UserRepository } from "../user/user.repository.js";
 
 import { CampaignRepository } from "./campaign.repository.js";
 
 import { CreateCampaignDto, UpdateCampaignDto } from "./dto/campaign.dto.js";
+
 export class CampaignService {
   private campaignRepository = new CampaignRepository();
 
-  private userRepository = new UserRepository();
-
   createCampaign = async (userId: string, data: CreateCampaignDto) => {
-    const user = await this.userRepository.findById(userId);
-
-    if (!user || user.role !== UserRole.BRAND) {
-      throw new AppError("Only brands can create campaigns", 403);
-    }
-
     return this.campaignRepository.create({
       ...data,
       brandId: userId,
@@ -32,6 +21,7 @@ export class CampaignService {
   getBrandCampaigns = async (userId: string) => {
     return this.campaignRepository.findByBrandId(userId);
   };
+
   getCampaignById = async (campaignId: string) => {
     const campaign = await this.campaignRepository.findById(campaignId);
 
@@ -41,6 +31,7 @@ export class CampaignService {
 
     return campaign;
   };
+
   updateCampaign = async (
     campaignId: string,
     userId: string,
@@ -55,6 +46,7 @@ export class CampaignService {
     if (campaign.brandId.toString() !== userId) {
       throw new AppError("Unauthorized", 403);
     }
+
     const startDate = data.startDate
       ? new Date(data.startDate)
       : campaign.startDate;
@@ -64,8 +56,10 @@ export class CampaignService {
     if (endDate <= startDate) {
       throw new AppError("End date must be greater than start date", 400);
     }
+
     return this.campaignRepository.updateById(campaignId, data);
   };
+
   deleteCampaign = async (campaignId: string, userId: string) => {
     const campaign = await this.campaignRepository.findById(campaignId);
 

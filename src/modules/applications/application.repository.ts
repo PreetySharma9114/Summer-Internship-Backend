@@ -30,9 +30,9 @@ export class ApplicationRepository {
     }).populate("campaignId");
   };
 
-  findById = async (id: string) => {
+  findById(id: string) {
     return Application.findById(id);
-  };
+  }
 
   updateStatus = async (id: string, status: ApplicationStatus) => {
     return Application.findByIdAndUpdate(

@@ -83,8 +83,8 @@ export class ApplicationService {
 
   updateApplicationStatus = async (
     applicationId: string,
+    brandId: string,
     status: ApplicationStatus,
-    userId: string,
   ) => {
     const application =
       await this.applicationRepository.findById(applicationId);
@@ -94,38 +94,21 @@ export class ApplicationService {
     }
 
     const campaign = await this.campaignRepository.findById(
-      application.campaignId.toString(),
+      String(application.campaignId),
     );
 
     if (!campaign) {
       throw new AppError("Campaign not found", 404);
     }
 
-    if (campaign.brandId.toString() !== userId) {
+    if (campaign.brandId.toString() !== brandId) {
       throw new AppError("Unauthorized", 403);
     }
 
-    if (application.status === status) {
-      throw new AppError(`Application already ${status.toLowerCase()}`, 400);
-    }
+    application.status = status;
 
-    if (status === ApplicationStatus.ACCEPTED) {
-      if (campaign.filledSlots >= campaign.totalSlots) {
-        throw new AppError("Campaign is already full", 400);
-      }
+    await application.save();
 
-      const updatedCampaign =
-        await this.campaignRepository.incrementFilledSlots(
-          campaign._id.toString(),
-        );
-      if (
-        updatedCampaign &&
-        updatedCampaign.filledSlots >= updatedCampaign.totalSlots
-      ) {
-        await this.campaignRepository.closeCampaign(campaign._id.toString());
-      }
-    }
-
-    return this.applicationRepository.updateStatus(applicationId, status);
+    return application;
   };
 }

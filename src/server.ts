@@ -1,5 +1,5 @@
 import { setServers } from "node:dns/promises";
-import 'reflect-metadata';
+import "reflect-metadata";
 setServers(["1.1.1.1", "8.8.8.8"]);
 
 import app from "./app.js";
@@ -27,4 +27,8 @@ async function bootstrap() {
   process.on("SIGINT", () => shutdown("SIGINT"));
 }
 
-bootstrap();
+bootstrap().catch((error) => {
+  logger.error("Application startup failed", error);
+
+  process.exit(1);
+});

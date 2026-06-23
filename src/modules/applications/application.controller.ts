@@ -35,8 +35,11 @@ export const ApplicationController = {
     try {
       const campaignId = req.params.campaignId as string;
 
-      const applications =
-        await applicationService.getCampaignApplications(campaignId, req.user!.id);
+      const applications = await applicationService.getCampaignApplications(
+        campaignId,
+        req.user!.id,
+      );
+
       return ResponseUtil.success(
         res,
         applications,
@@ -77,14 +80,14 @@ export const ApplicationController = {
 
       const application = await applicationService.updateApplicationStatus(
         applicationId,
-        req.body.status,
         req.user!.id,
+        req.body.status,
       );
-      
+
       return ResponseUtil.success(
         res,
         application,
-        "Application updated successfully",
+        "Application status updated successfully",
       );
     } catch (error) {
       next(error);
