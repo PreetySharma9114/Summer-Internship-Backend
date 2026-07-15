@@ -215,6 +215,9 @@ export class InstagramService {
     instagramUserId: string,
     data: { caption: string; imageUrl?: string; videoUrl?: string },
   ) => {
+    logger.info(data.imageUrl);
+    logger.info(data.videoUrl);
+
     const containerId = await this._createMediaContainer(
       accessToken,
       instagramUserId,
@@ -259,8 +262,6 @@ export class InstagramService {
       videoUrl?: string;
     },
   ) => {
-    logger.info(data);
-
     const params = new URLSearchParams({
       access_token: accessToken,
       caption: data.caption,
@@ -305,8 +306,8 @@ export class InstagramService {
     for (let i = 0; i < maxAttempts; i++) {
       const response = await fetch(
         `https://graph.instagram.com/v24.0/${creationId}` +
-        `?fields=status_code,status` +
-        `&access_token=${accessToken}`,
+          `?fields=status_code,status` +
+          `&access_token=${accessToken}`,
       );
 
       const data = await response.json();
