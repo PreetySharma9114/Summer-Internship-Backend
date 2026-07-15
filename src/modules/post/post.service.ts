@@ -7,6 +7,7 @@ import { IInfluencerProfile } from "../profile/interfaces/influencer-profile.int
 import { ProfileRepository } from "../profile/profile.repository.js";
 import { PostAIService } from "./post.ai.service.js";
 import { SubmitCampaignPostDto } from "./post.dto.js";
+import { logger } from "../../shared/utils/logger.js";
 
 export class PostService {
   private influencerProfileRepo = new ProfileRepository();
@@ -42,7 +43,7 @@ export class PostService {
 
     if (!profile) throw new NotFoundError("Influencer profile not found");
 
-    console.log(profile);
+    logger.info(profile);
 
     if (!profile.instagramToken || !profile.instagramUserId) {
       throw new ConflictError("Instagram account not connected");

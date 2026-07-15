@@ -1,5 +1,6 @@
 import { env } from "../../config/env.js";
 import { BadRequestError } from "../../shared/utils/appError.js";
+import { logger } from "../../shared/utils/logger.js";
 
 export class InstagramService {
   exchange = async (code: string) => {
@@ -220,7 +221,7 @@ export class InstagramService {
       data,
     );
 
-    console.log(containerId);
+    logger.info(containerId);
 
     await this._waitForContainerReady(containerId, accessToken);
 
@@ -238,6 +239,8 @@ export class InstagramService {
     );
 
     const publishData = await response.json();
+
+    logger.info(publishData);
 
     if (!response.ok)
       throw new BadRequestError(
@@ -278,7 +281,7 @@ export class InstagramService {
 
     const containerData = await response.json();
 
-    console.log(containerData);
+    logger.info(containerData);
 
     if (!response.ok)
       throw new BadRequestError(
