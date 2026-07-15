@@ -4,6 +4,8 @@ import { UserRepository } from "../user/user.repository.js";
 
 import { ProfileRepository } from "./profile.repository.js";
 
+import { NotFoundError } from "../../shared/utils/appError.js";
+
 export class ProfileService {
   private profileRepo = new ProfileRepository();
 
@@ -25,7 +27,10 @@ export class ProfileService {
     return profile;
   };
 
-  completeBrandProfile = async (userId: string, data: BrandProfileDto) => {
+  completeBrandProfile = async (
+    userId: string,
+    data: BrandProfileDto,
+  ) => {
     const profile = await this.profileRepo.upsertBrandProfile(userId, {
       ...data,
     });
@@ -34,6 +39,17 @@ export class ProfileService {
       userId,
       ProfileStatus.COMPLETE,
     );
+
+    return profile;
+  };
+
+  // NEW
+  getInfluencerProfile = async (profileId: string) => {
+    const profile = await this.profileRepo.findById(profileId);
+
+    if (!profile) {
+      throw new NotFoundError("Influencer profile not found");
+    }
 
     return profile;
   };

@@ -1,20 +1,12 @@
 import { Router } from "express";
-
 import { CampaignController } from "./campaign.controller.js";
-
-import { ApplicationController } from "../applications/application.controller.js";
-
 import { authenticate } from "../../shared/middlewares/auth.middleware.js";
-
 import { authorize } from "../../shared/middlewares/role.middleware.js";
-
 import { validate } from "../../shared/middlewares/validation.middleware.js";
-
 import {
   createCampaignSchema,
   updateCampaignSchema,
 } from "./dto/campaign.dto.js";
-
 import { UserRole } from "../../common/enums/user-role.enum.js";
 
 export const CampaignRouter = Router();
@@ -56,14 +48,3 @@ CampaignRouter.delete(
   CampaignController.deleteCampaign,
 );
 
-CampaignRouter.post(
-  "/:campaignId/apply",
-  authorize(UserRole.INFLUENCER),
-  ApplicationController.applyToCampaign,
-);
-
-CampaignRouter.get(
-  "/:campaignId/applications",
-  authorize(UserRole.BRAND),
-  ApplicationController.getCampaignApplications,
-);

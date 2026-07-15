@@ -1,15 +1,18 @@
 import multer from "multer";
 import path from "path";
 
-import { UploadService } from "../services/upload.services.js";
-
+import { UploadService } from "../../modules/upload/upload.service.js";
 UploadService.ensureUploadDirectories();
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
     if (file.fieldname === "logo") {
       cb(null, "uploads/logos");
+      return;
+    }
 
+    if (file.fieldname === "portfolio") {
+      cb(null, "uploads/portfolio/original");
       return;
     }
 
@@ -26,11 +29,19 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter: multer.Options["fileFilter"] = (req, file, cb) => {
-  const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+  const allowedTypes = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+    "video/mp4",
+    "video/quicktime",
+    "video/x-msvideo",
+    "video/x-matroska",
+  ];
 
   if (!allowedTypes.includes(file.mimetype)) {
-    cb(new Error("Only image files are allowed"));
-
+    cb(new Error("Only image and video files are allowed"));
     return;
   }
 
@@ -39,10 +50,8 @@ const fileFilter: multer.Options["fileFilter"] = (req, file, cb) => {
 
 export const upload = multer({
   storage,
-
   fileFilter,
-
   limits: {
-    fileSize: 5 * 1024 * 1024,
+    fileSize: 100 * 1024 * 1024,
   },
 });

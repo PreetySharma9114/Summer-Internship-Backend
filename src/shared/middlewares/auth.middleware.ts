@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-
+import { UserRole } from "../../common/enums/user-role.enum.js";
 import jwt from "jsonwebtoken";
 
 import { env } from "../../config/env.js";
@@ -11,7 +11,7 @@ export interface JwtPayload {
 
   email: string;
 
-  role: string;
+  role: UserRole;
 }
 
 export const authenticate = (

@@ -1,38 +1,29 @@
 import { CampaignStatus } from "../../common/enums/campaign-status.enum.js";
 import { Campaign } from "./campaign.model.js";
-import { BrandProfile } from "../profile/models/brand-profile.model.js";
 export class CampaignRepository {
   create = async (data: object) => {
     return Campaign.create(data);
   };
 
   findAll = async () => {
-    return Campaign.find().populate("brandId");
-  };
-
-  findById = async (campaignId: string) => {
-    const campaign = await Campaign.findById(campaignId);
-
-    if (!campaign) {
-      return null;
-    }
-
-    const brandProfile = await BrandProfile.findOne({
-      userId: campaign.brandId,
+    return Campaign.find().populate({
+      path: "brandId",
+      select: "brandName logo",
     });
-
-    return {
-      ...campaign.toObject(),
-      brand: {
-        brandName: brandProfile?.brandName,
-        logo: brandProfile?.logo,
-      },
-    };
+  };
+  findById = async (campaignId: string) => {
+    return Campaign.findById(campaignId).populate({
+      path: "brandId",
+      select: "brandName logo",
+    });
   };
 
   findByBrandId = async (brandId: string) => {
     return Campaign.find({
       brandId,
+    }).populate({
+      path: "brandId",
+      select: "brandName logo",
     });
   };
   updateById = async (campaignId: string, data: object) => {

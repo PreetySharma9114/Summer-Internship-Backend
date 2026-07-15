@@ -1,7 +1,11 @@
 import { ApplicationStatus } from "../../common/enums/application-status.enum.js";
 import { UserRole } from "../../common/enums/user-role.enum.js";
 
-import { AppError } from "../../shared/utils/appError.js";
+import {
+  ConflictError,
+  ForbiddenError,
+  NotFoundError,
+} from "../../shared/utils/appError.js";
 
 import { UserRepository } from "../user/user.repository.js";
 import { CampaignRepository } from "../campaign/campaign.repository.js";
@@ -21,23 +25,28 @@ export class ApplicationService {
     const user = await this.userRepository.findById(userId);
 
     if (!user || user.role !== UserRole.INFLUENCER) {
-      throw new AppError("Only influencers can apply", 403);
+      throw new ForbiddenError("Only influencers can apply");
     }
 
     const profile = await this.profileRepository.findByUserId(userId);
 
     if (!profile) {
-      throw new AppError("Profile not found", 404);
+      throw new NotFoundError("Profile not found");
     }
 
     const campaign = await this.campaignRepository.findById(campaignId);
 
     if (!campaign) {
-      throw new AppError("Campaign not found", 404);
+      throw new NotFoundError("Campaign not found");
     }
 
-    if (campaign.brandId.toString() === userId) {
-      throw new AppError("Cannot apply to your own campaign", 400);
+    const brandProfile = await this.profileRepository.findByUserId(userId);
+
+    if (
+      brandProfile &&
+      campaign.brandId.toString() === brandProfile._id.toString()
+    ) {
+      throw new ForbiddenError("Cannot apply to your own campaign");
     }
 
     const existingApplication =
@@ -47,7 +56,7 @@ export class ApplicationService {
       );
 
     if (existingApplication) {
-      throw new AppError("Already applied to this campaign", 409);
+      throw new ConflictError("Already applied to this campaign");
     }
 
     return this.applicationRepository.create({
@@ -61,11 +70,17 @@ export class ApplicationService {
     const campaign = await this.campaignRepository.findById(campaignId);
 
     if (!campaign) {
-      throw new AppError("Campaign not found", 404);
+      throw new NotFoundError("Campaign not found");
     }
 
-    if (campaign.brandId.toString() !== userId) {
-      throw new AppError("Unauthorized", 403);
+    const profile = await this.profileRepository.findByUserId(userId);
+
+    if (!profile) {
+      throw new NotFoundError("Profile not found");
+    }
+
+    if (campaign.brandId._id.toString() !== profile._id.toString()) {
+      throw new ForbiddenError("Unauthorized");
     }
 
     return this.applicationRepository.findByCampaignId(campaignId);
@@ -75,7 +90,7 @@ export class ApplicationService {
     const profile = await this.profileRepository.findByUserId(userId);
 
     if (!profile) {
-      throw new AppError("Profile not found", 404);
+      throw new NotFoundError("Profile not found");
     }
 
     return this.applicationRepository.findByInfluencerId(profile.id);
@@ -90,7 +105,7 @@ export class ApplicationService {
       await this.applicationRepository.findById(applicationId);
 
     if (!application) {
-      throw new AppError("Application not found", 404);
+      throw new NotFoundError("Application not found");
     }
 
     const campaign = await this.campaignRepository.findById(
@@ -98,11 +113,17 @@ export class ApplicationService {
     );
 
     if (!campaign) {
-      throw new AppError("Campaign not found", 404);
+      throw new NotFoundError("Campaign not found");
     }
 
-    if (campaign.brandId.toString() !== brandId) {
-      throw new AppError("Unauthorized", 403);
+    const profile = await this.profileRepository.findByUserId(brandId);
+
+    if (!profile) {
+      throw new NotFoundError("Profile not found");
+    }
+
+    if (campaign.brandId.toString() !== profile._id.toString()) {
+      throw new ForbiddenError("Unauthorized");
     }
 
     application.status = status;

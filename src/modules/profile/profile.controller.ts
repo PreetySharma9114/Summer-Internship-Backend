@@ -18,7 +18,11 @@ export const ProfileController = {
         req.body,
       );
 
-      return ResponseUtil.success(res, profile, "Influencer profile completed");
+      return ResponseUtil.success(
+        res,
+        profile,
+        "Influencer profile completed",
+      );
     } catch (error) {
       next(error);
     }
@@ -35,7 +39,32 @@ export const ProfileController = {
         req.body,
       );
 
-      return ResponseUtil.success(res, profile, "Brand profile completed");
+      return ResponseUtil.success(
+        res,
+        profile,
+        "Brand profile completed",
+      );
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  // NEW
+  getInfluencerProfile: async (
+    req: Request<{ profileId: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const profile = await profileService.getInfluencerProfile(
+        req.params.profileId,
+      );
+
+      return ResponseUtil.success(
+        res,
+        profile,
+        "Influencer profile fetched successfully",
+      );
     } catch (error) {
       next(error);
     }

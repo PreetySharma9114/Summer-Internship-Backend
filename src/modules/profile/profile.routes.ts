@@ -26,3 +26,8 @@ ProfileRouter.post(
   validate(brandProfileSchema),
   ProfileController.completeBrandProfile,
 );
+
+ProfileRouter.get(
+  "/influencer/:profileId",
+  ProfileController.getInfluencerProfile,
+);

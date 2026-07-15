@@ -19,7 +19,7 @@ const campaignSchema = new Schema<ICampaign>(
   {
     brandId: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Profile",
       required: true,
     },
 

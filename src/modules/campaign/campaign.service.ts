@@ -1,16 +1,26 @@
-import { AppError } from "../../shared/utils/appError.js";
-
+import {
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
+} from "../../shared/utils/appError.js";
 import { CampaignRepository } from "./campaign.repository.js";
-
+import { ProfileRepository } from "../profile/profile.repository.js";
 import { CreateCampaignDto, UpdateCampaignDto } from "./dto/campaign.dto.js";
 
 export class CampaignService {
   private campaignRepository = new CampaignRepository();
+  private profileRepository = new ProfileRepository();
 
   createCampaign = async (userId: string, data: CreateCampaignDto) => {
+    const profile = await this.profileRepository.findByUserId(userId);
+
+    if (!profile) {
+      throw new NotFoundError("Profile not found");
+    }
+
     return this.campaignRepository.create({
       ...data,
-      brandId: userId,
+      brandId: profile._id,
     });
   };
 
@@ -19,14 +29,19 @@ export class CampaignService {
   };
 
   getBrandCampaigns = async (userId: string) => {
-    return this.campaignRepository.findByBrandId(userId);
-  };
+    const profile = await this.profileRepository.findByUserId(userId);
 
+    if (!profile) {
+      throw new NotFoundError("Profile not found");
+    }
+
+    return this.campaignRepository.findByBrandId(profile._id.toString());
+  };
   getCampaignById = async (campaignId: string) => {
     const campaign = await this.campaignRepository.findById(campaignId);
 
     if (!campaign) {
-      throw new AppError("Campaign not found", 404);
+      throw new NotFoundError("Campaign not found");
     }
 
     return campaign;
@@ -40,11 +55,17 @@ export class CampaignService {
     const campaign = await this.campaignRepository.findById(campaignId);
 
     if (!campaign) {
-      throw new AppError("Campaign not found", 404);
+      throw new NotFoundError("Campaign not found");
     }
 
-    if (campaign.brandId.toString() !== userId) {
-      throw new AppError("Unauthorized", 403);
+    const profile = await this.profileRepository.findByUserId(userId);
+
+    if (!profile) {
+      throw new NotFoundError("Profile not found");
+    }
+
+    if (campaign.brandId.toString() !== profile._id.toString()) {
+      throw new ForbiddenError("Unauthorized");
     }
 
     const startDate = data.startDate
@@ -54,7 +75,7 @@ export class CampaignService {
     const endDate = data.endDate ? new Date(data.endDate) : campaign.endDate;
 
     if (endDate <= startDate) {
-      throw new AppError("End date must be greater than start date", 400);
+      throw new BadRequestError("End date must be greater than start date");
     }
 
     return this.campaignRepository.updateById(campaignId, data);
@@ -64,11 +85,17 @@ export class CampaignService {
     const campaign = await this.campaignRepository.findById(campaignId);
 
     if (!campaign) {
-      throw new AppError("Campaign not found", 404);
+      throw new NotFoundError("Campaign not found");
     }
 
-    if (campaign.brandId.toString() !== userId) {
-      throw new AppError("Unauthorized", 403);
+    const profile = await this.profileRepository.findByUserId(userId);
+
+    if (!profile) {
+      throw new NotFoundError("Profile not found");
+    }
+
+    if (campaign.brandId.toString() !== profile._id.toString()) {
+      throw new ForbiddenError("Unauthorized");
     }
 
     await this.campaignRepository.deleteById(campaignId);

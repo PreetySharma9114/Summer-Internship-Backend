@@ -41,4 +41,8 @@ export class ProfileRepository {
       userId,
     });
   };
+
+  findById = async (profileId: string) => {
+    return Profile.findById(profileId);
+  };
 }
