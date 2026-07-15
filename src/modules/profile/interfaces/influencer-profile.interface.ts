@@ -4,11 +4,10 @@ export interface IInfluencerProfile extends IProfile {
   username: string;
   bio: string;
   niches: string[];
-  instagramUsername?: string;
+  instagramToken:string;
+  instagramUsername: string;
+  instagramFollowers: number;
   youtubeUsername?: string;
-
-  instagramFollowers?: number;
   youtubeFollowers?: number;
-
   profileImage?: string;
 }

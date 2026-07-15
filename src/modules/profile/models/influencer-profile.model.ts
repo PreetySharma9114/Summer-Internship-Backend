@@ -1,9 +1,10 @@
 import { Schema } from "mongoose";
-
 import { Profile } from "./profile.model.js";
+import { IInfluencerProfile } from "../interfaces/influencer-profile.interface.js";
+
 export const InfluencerProfile = Profile.discriminator(
   "INFLUENCER",
-  new Schema({
+  new Schema<IInfluencerProfile>({
     fullName: {
       type: String,
       required: true,
@@ -26,9 +27,21 @@ export const InfluencerProfile = Profile.discriminator(
       },
     ],
 
-    instagramUsername: String,
+    instagramToken: {
+      type: String,
+      required: true,
+      select: false,
+    },
 
-    instagramFollowers: Number,
+    instagramUsername: {
+      type: String,
+      required: true,
+    },
+
+    instagramFollowers: {
+      type: Number,
+      required: true,
+    },
 
     youtubeUsername: String,
 

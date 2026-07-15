@@ -10,6 +10,10 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(32),
   JWT_EXPIRES_IN: z.string().default("7d"),
   APP_URL: z.string().default("http://localhost:8000"),
+  INSTAGRAM_APP_ID: z.string(),
+  INSTAGRAM_APP_SECRET: z.string(),
+  INSTAGRAM_REDIRECT_URI: z.url(),
+  GEMINI_API_KEY: z.string(),
 });
 
 const parsed = envSchema.safeParse(process.env);

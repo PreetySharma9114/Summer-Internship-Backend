@@ -8,11 +8,14 @@ export const influencerProfileSchema = z.object({
   bio: z.string().min(1),
 
   niches: z.array(z.string()).min(1),
-  instagramUsername: z.string().optional(),
+
+  instagramToken: z.string(),
+
+  instagramUsername: z.string(),
+
+  instagramFollowers: z.number(),
 
   youtubeUsername: z.string().optional(),
-
-  instagramFollowers: z.number().optional(),
 
   youtubeFollowers: z.number().optional(),
 
