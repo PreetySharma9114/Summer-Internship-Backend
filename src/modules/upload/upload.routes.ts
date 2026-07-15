@@ -29,5 +29,5 @@ UploadRouter.post(
   "/post",
   authorize(UserRole.INFLUENCER),
   upload.single("post"),
-  UploadController.uploadPortfolio,
+  UploadController.uploadPost,
 );
