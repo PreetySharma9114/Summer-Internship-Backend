@@ -38,8 +38,7 @@ export class UploadService {
   static async uploadPortfolio(file: Express.Multer.File) {
     const mediaUrl = this.getFileUrl(file.path);
 
-    const thumbnailName =
-      path.parse(file.filename).name + ".jpg";
+    const thumbnailName = path.parse(file.filename).name + ".jpg";
 
     const thumbnailPath = path.join(
       process.cwd(),

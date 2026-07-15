@@ -24,3 +24,10 @@ UploadRouter.post(
   upload.single("portfolio"),
   UploadController.uploadPortfolio,
 );
+
+UploadRouter.post(
+  "/post",
+  authorize(UserRole.INFLUENCER),
+  upload.single("post"),
+  UploadController.uploadPortfolio,
+);

@@ -16,11 +16,7 @@ export class UploadController {
 
       const result = await UploadService.uploadFile(req.file);
 
-      ResponseUtil.success(
-        res,
-        result,
-        "File uploaded successfully",
-      );
+      ResponseUtil.success(res, result, "File uploaded successfully");
     } catch (error) {
       next(error);
     }
@@ -38,11 +34,25 @@ export class UploadController {
 
       const result = await UploadService.uploadPortfolio(req.file);
 
-      ResponseUtil.success(
-        res,
-        result,
-        "Portfolio uploaded successfully",
-      );
+      ResponseUtil.success(res, result, "Portfolio uploaded successfully");
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async uploadPost(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      if (!req.file) {
+        throw new Error("No file uploaded");
+      }
+
+      const result = await UploadService.uploadFile(req.file);
+
+      ResponseUtil.success(res, result, "File uploaded successfully");
     } catch (error) {
       next(error);
     }
