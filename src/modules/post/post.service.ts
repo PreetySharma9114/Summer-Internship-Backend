@@ -42,6 +42,8 @@ export class PostService {
 
     if (!profile) throw new NotFoundError("Influencer profile not found");
 
+    console.log(profile);
+
     if (!profile.instagramToken || !profile.instagramUserId) {
       throw new ConflictError("Instagram account not connected");
     }

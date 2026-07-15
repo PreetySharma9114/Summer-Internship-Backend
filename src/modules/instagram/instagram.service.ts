@@ -220,6 +220,8 @@ export class InstagramService {
       data,
     );
 
+    console.log(containerId);
+
     await this._waitForContainerReady(containerId, accessToken);
 
     const publishParams = new URLSearchParams({
@@ -275,6 +277,8 @@ export class InstagramService {
     );
 
     const containerData = await response.json();
+
+    console.log(containerData);
 
     if (!response.ok)
       throw new BadRequestError(
