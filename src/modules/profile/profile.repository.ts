@@ -1,11 +1,8 @@
-import { Profile } from "./models/profile.model.js";
-import { InfluencerProfile } from "./models/influencer-profile.model.js";
-import { BrandProfile } from "./models/brand-profile.model.js";
-import {
-  InfluencerProfileDto,
-  BrandProfileDto,
-} from "./dto/profile.dto.js";
 import { UserRole } from "../../common/enums/user-role.enum.js";
+import { BrandProfileDto, InfluencerProfileDto } from "./dto/profile.dto.js";
+import { BrandProfile } from "./models/brand-profile.model.js";
+import { InfluencerProfile } from "./models/influencer-profile.model.js";
+import { Profile } from "./models/profile.model.js";
 
 export class ProfileRepository {
   async upsertInfluencerProfile(userId: string, data: InfluencerProfileDto) {
@@ -36,10 +33,10 @@ export class ProfileRepository {
     );
   }
 
-  findByUserId = async (userId: string) => {
+  findByUserId = async (userId: string, select?: string) => {
     return Profile.findOne({
       userId,
-    });
+    }).select(select ?? "");
   };
 
   findById = async (profileId: string) => {

@@ -14,6 +14,7 @@ import { UploadRouter } from "./modules/upload/upload.routes.js";
 
 import { errorMiddleware } from "./shared/middlewares/error.middleware.js";
 import { InstagramRouter } from "./modules/instagram/instagram.routes.js";
+import { PostRouter } from "./modules/post/post.routes.js";
 
 const app = express();
 
@@ -64,6 +65,7 @@ app.use("/api/applications", ApplicationRouter);
 app.use("/api/portfolio", PortfolioRouter);
 app.use("/api/upload", UploadRouter);
 app.use("/api/instagram", InstagramRouter);
+app.use("/api/post", PostRouter);
 
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
