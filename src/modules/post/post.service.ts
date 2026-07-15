@@ -36,6 +36,9 @@ export class PostService {
   };
 
   submitCampaignPost = async (userId: string, data: SubmitCampaignPostDto) => {
+    logger.info(`User Id ${userId}`);
+    logger.info(`data ${data}`);
+
     const profile = (await this.influencerProfileRepo.findByUserId(
       userId,
       "+instagramToken +instagramUserId",
