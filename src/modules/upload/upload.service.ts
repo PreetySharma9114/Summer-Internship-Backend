@@ -1,61 +1,81 @@
-import OpenAI from "openai";
+import fs from "fs";
+import path from "path";
+import sharp from "sharp";
+import { exec } from "child_process";
 
-import { env } from "../../config/env.js";
-import { ConflictError, NotFoundError } from "../../shared/utils/appError.js";
-import { InstagramService } from "../instagram/instagram.service.js";
-import { IInfluencerProfile } from "../profile/interfaces/influencer-profile.interface.js";
-import { ProfileRepository } from "../profile/profile.repository.js";
-import { PostAIService } from "./post.ai.service.js";
-import { SubmitCampaignPostDto } from "./post.dto.js";
+export class UploadService {
+  static ensureUploadDirectories() {
+    const directories = [
+      "uploads",
+      "uploads/logos",
+      "uploads/profile-images",
+      "uploads/portfolio",
+      "uploads/portfolio/original",
+      "uploads/portfolio/thumbnails",
+      "uploads/post",
+    ];
 
-export class PostService {
-  private influencerProfileRepo = new ProfileRepository();
-  private instagramService = new InstagramService();
+    directories.forEach((directory) => {
+      if (!fs.existsSync(directory)) {
+        fs.mkdirSync(directory, {
+          recursive: true,
+        });
+      }
+    });
+  }
 
-  private aiService = new PostAIService();
+  static getFileUrl(filePath: string) {
+    return "/" + filePath.replace(/\\/g, "/");
+  }
 
-  private openai = new OpenAI({
-    apiKey: env.GEMINI_API_KEY,
-    baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
-  });
+  static async uploadFile(file: Express.Multer.File) {
+    return {
+      url: this.getFileUrl(file.path),
+      filename: file.filename,
+    };
+  }
 
-  generateCampaignCaption = async (
-    userText: string | undefined,
-    file: Express.Multer.File,
-  ) => {
-    const result = await this.aiService.generateCaption(userText, file);
+  static async uploadPortfolio(file: Express.Multer.File) {
+    const mediaUrl = this.getFileUrl(file.path);
 
-    return result;
-  };
+    const thumbnailName = path.parse(file.filename).name + ".jpg";
 
-  refineCampaignCaption = async (caption: string, instruction: string) => {
-    const result = await this.aiService.refineCaption(caption, instruction);
+    const thumbnailPath = path.join(
+      process.cwd(),
+      "uploads",
+      "portfolio",
+      "thumbnails",
+      thumbnailName,
+    );
 
-    return result;
-  };
+    if (file.mimetype.startsWith("image/")) {
+      await sharp(file.path)
+        .resize(400, 400)
+        .jpeg({
+          quality: 80,
+        })
+        .toFile(thumbnailPath);
+    } else {
+      await new Promise<void>((resolve, reject) => {
+        exec(
+          `ffmpeg -i "${file.path}" -ss 00:00:01 -vframes 1 "${thumbnailPath}"`,
+          (error) => {
+            if (error) {
+              reject(error);
+              return;
+            }
 
-  submitCampaignPost = async (userId: string, data: SubmitCampaignPostDto) => {
-    const profile = (await this.influencerProfileRepo.findByUserId(
-      userId,
-      "+instagramToken +instagramUserId",
-    )) as IInfluencerProfile | null;
-
-    if (!profile) throw new NotFoundError("Influencer profile not found");
-
-    console.log(profile);
-
-    if (!profile.instagramToken || !profile.instagramUserId) {
-      throw new ConflictError("Instagram account not connected");
+            resolve();
+          },
+        );
+      });
     }
 
-    const media = await this.instagramService.publishMedia(
-      profile.instagramToken,
-      profile.instagramUserId,
-      {
-        caption: data.caption,
-        imageUrl: data.imageUrl ? `${env.APP_URL}${data.imageUrl}` : undefined,
-        videoUrl: data.videoUrl ? `${env.APP_URL}${data.videoUrl}` : undefined,
-      },
-    );
-  };
+    return {
+      mediaUrl,
+      thumbnailUrl: this.getFileUrl(
+        `uploads/portfolio/thumbnails/${thumbnailName}`,
+      ),
+    };
+  }
 }

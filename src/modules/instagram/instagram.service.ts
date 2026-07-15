@@ -300,8 +300,8 @@ export class InstagramService {
     for (let i = 0; i < maxAttempts; i++) {
       const response = await fetch(
         `https://graph.instagram.com/v24.0/${creationId}` +
-          `?fields=status_code,status` +
-          `&access_token=${accessToken}`,
+        `?fields=status_code,status` +
+        `&access_token=${accessToken}`,
       );
 
       const data = await response.json();
