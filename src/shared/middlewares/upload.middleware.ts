@@ -18,6 +18,7 @@ const storage = multer.diskStorage({
 
     if (file.fieldname === "post") {
       cb(null, "uploads/post");
+      return;
     }
 
     cb(null, "uploads/profile-images");
