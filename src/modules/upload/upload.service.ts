@@ -12,6 +12,7 @@ export class UploadService {
       "uploads/portfolio",
       "uploads/portfolio/original",
       "uploads/portfolio/thumbnails",
+      "uploads/post",
     ];
 
     directories.forEach((directory) => {
