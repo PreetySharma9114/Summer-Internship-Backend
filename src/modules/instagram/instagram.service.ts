@@ -309,7 +309,7 @@ export class InstagramService {
 
       const data = await response.json();
 
-      logger.info(data.status_code);
+      console.log(data);
 
       if (data.status_code === "FINISHED") return;
 
