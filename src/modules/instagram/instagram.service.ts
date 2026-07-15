@@ -259,6 +259,8 @@ export class InstagramService {
       videoUrl?: string;
     },
   ) => {
+    logger.info(data);
+
     const params = new URLSearchParams({
       access_token: accessToken,
       caption: data.caption,
@@ -309,7 +311,7 @@ export class InstagramService {
 
       const data = await response.json();
 
-      console.log(data);
+      logger.info(data.status_code);
 
       if (data.status_code === "FINISHED") return;
 
