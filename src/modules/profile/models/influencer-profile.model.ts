@@ -33,6 +33,12 @@ export const InfluencerProfile = Profile.discriminator(
       select: false,
     },
 
+    instagramUserId: {
+      type: String,
+      required: true,
+      select: false,
+    },
+
     instagramUsername: {
       type: String,
       required: true,

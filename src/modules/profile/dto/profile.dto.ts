@@ -11,6 +11,8 @@ export const influencerProfileSchema = z.object({
 
   instagramToken: z.string(),
 
+  instagramUserId: z.string(),
+
   instagramUsername: z.string(),
 
   instagramFollowers: z.number(),
