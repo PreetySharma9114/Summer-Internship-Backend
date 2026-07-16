@@ -20,4 +20,55 @@ export const InstagramController = {
       next(error);
     }
   },
+   getMedia: async (
+
+    req: Request,
+
+    res: Response,
+
+    next: NextFunction,
+
+  ) => {
+
+    try {
+
+      const after =
+
+        typeof req.query.after === "string"
+
+          ? req.query.after
+
+          : undefined;
+
+      const limit =
+
+        typeof req.query.limit === "string"
+
+          ? Number(req.query.limit)
+
+          : undefined;
+
+      const result = await instagramService.getMedia(
+
+        req.user!.id,
+
+        {
+
+          after,
+
+          limit,
+
+        },
+
+      );
+
+      ApiResponse.success(res, result);
+
+    } catch (error) {
+
+      next(error);
+
+    }
+
+  },
 };

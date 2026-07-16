@@ -1,8 +1,12 @@
+import { string } from "zod";
 import { env } from "../../config/env.js";
-import { BadRequestError } from "../../shared/utils/appError.js";
+import { BadRequestError, NotFoundError } from "../../shared/utils/appError.js";
 import { logger } from "../../shared/utils/logger.js";
+import { ProfileRepository } from "../profile/profile.repository.js";
+import { IInfluencerProfile } from "../profile/interfaces/influencer-profile.interface.js";
 
 export class InstagramService {
+  private profileRepository = new ProfileRepository();
   exchange = async (code: string) => {
     const params = new URLSearchParams({
       client_id: env.INSTAGRAM_APP_ID,
@@ -84,13 +88,24 @@ export class InstagramService {
   };
 
   getMedia = async (
-    token: string,
+    userId: string,
     options?: { after?: string; limit?: number },
   ) => {
+    const profile = (await this.profileRepository.findByUserId(
+      userId,
+      "+instagramToken +instagramUserId",
+    )) as IInfluencerProfile | null;
+    
+    if (!profile) {
+      throw new NotFoundError("Profile not found");
+    }
+
+    console.log(profile);
+    
     const params = new URLSearchParams({
       fields:
         "id,caption,media_type,media_product_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count,impressions",
-      access_token: token,
+      access_token: profile.instagramToken,
       limit: String(options?.limit ?? 25),
     });
 
@@ -101,6 +116,8 @@ export class InstagramService {
     );
 
     const data = await response.json();
+
+    console.log(data);
 
     if (!response.ok)
       throw new BadRequestError(
@@ -114,101 +131,101 @@ export class InstagramService {
     };
   };
 
-  getProfileInsights = async (token: string, options?: { limit?: number }) => {
-    const { media } = await this.getMedia(token, {
-      limit: options?.limit ?? 25,
-    });
+  // getProfileInsights = async (token: string, options?: { limit?: number }) => {
+  //   const { media } = await this.getMedia(token, {
+  //     limit: options?.limit ?? 25,
+  //   });
 
-    if (!media.length) {
-      return {
-        totalPosts: 0,
-        totalReach: 0,
-        totalViews: 0,
-        totalEngagement: 0,
-        averageReach: 0,
-        averageViews: 0,
-        averageEngagement: 0,
-        media: [],
-      };
-    }
+  //   if (!media.length) {
+  //     return {
+  //       totalPosts: 0,
+  //       totalReach: 0,
+  //       totalViews: 0,
+  //       totalEngagement: 0,
+  //       averageReach: 0,
+  //       averageViews: 0,
+  //       averageEngagement: 0,
+  //       media: [],
+  //     };
+  //   }
 
-    const insights = await Promise.all(
-      media.map(async (item: any) => {
-        const engagement = (item.like_count ?? 0) + (item.comments_count ?? 0);
+  //   const insights = await Promise.all(
+  //     media.map(async (item: any) => {
+  //       const engagement = (item.like_count ?? 0) + (item.comments_count ?? 0);
 
-        let reach = 0;
-        let views = 0;
-        let impressions = 0;
+  //       let reach = 0;
+  //       let views = 0;
+  //       let impressions = 0;
 
-        try {
-          const metrics =
-            item.media_product_type === "REELS"
-              ? "reach,views,impressions"
-              : "reach,impressions";
+  //       try {
+  //         const metrics =
+  //           item.media_product_type === "REELS"
+  //             ? "reach,views,impressions"
+  //             : "reach,impressions";
 
-          const params = new URLSearchParams({
-            metric: metrics,
-            access_token: token,
-          });
+  //         const params = new URLSearchParams({
+  //           metric: metrics,
+  //           access_token: token,
+  //         });
 
-          const response = await fetch(
-            `https://graph.instagram.com/v24.0/${item.id}/insights?${params}`,
-          );
+  //         const response = await fetch(
+  //           `https://graph.instagram.com/v24.0/${item.id}/insights?${params}`,
+  //         );
 
-          const data = await response.json();
+  //         const data = await response.json();
 
-          if (response.ok) {
-            const values = Object.fromEntries(
-              data.data.map((metric: any) => [
-                metric.name,
-                metric.values?.[0]?.value ?? 0,
-              ]),
-            );
+  //         if (response.ok) {
+  //           const values = Object.fromEntries(
+  //             data.data.map((metric: any) => [
+  //               metric.name,
+  //               metric.values?.[0]?.value ?? 0,
+  //             ]),
+  //           );
 
-            reach = values.reach ?? 0;
-            views = values.views ?? 0;
-            impressions = values.impressions ?? 0;
-          }
-        } catch {
-          // Ignore unsupported insight metrics for this media.
-        }
+  //           reach = values.reach ?? 0;
+  //           views = values.views ?? 0;
+  //           impressions = values.impressions ?? 0;
+  //         }
+  //       } catch {
+  //         // Ignore unsupported insight metrics for this media.
+  //       }
 
-        return {
-          mediaId: item.id,
-          engagement,
-          reach,
-          views,
-          impressions,
-        };
-      }),
-    );
+  //       return {
+  //         mediaId: item.id,
+  //         engagement,
+  //         reach,
+  //         views,
+  //         impressions,
+  //       };
+  //     }),
+  //   );
 
-    const totalReach = insights.reduce((sum, item) => sum + item.reach, 0);
+  //   const totalReach = insights.reduce((sum, item) => sum + item.reach, 0);
 
-    const totalViews = insights.reduce((sum, item) => sum + item.views, 0);
+  //   const totalViews = insights.reduce((sum, item) => sum + item.views, 0);
 
-    const totalEngagement = insights.reduce(
-      (sum, item) => sum + item.engagement,
-      0,
-    );
+  //   const totalEngagement = insights.reduce(
+  //     (sum, item) => sum + item.engagement,
+  //     0,
+  //   );
 
-    const totalImpressions = insights.reduce(
-      (sum, item) => sum + item.impressions,
-      0,
-    );
+  //   const totalImpressions = insights.reduce(
+  //     (sum, item) => sum + item.impressions,
+  //     0,
+  //   );
 
-    return {
-      totalPosts: insights.length,
-      totalReach,
-      totalViews,
-      totalEngagement,
-      totalImpressions,
-      averageReach: Math.round(totalReach / insights.length),
-      averageViews: Math.round(totalViews / insights.length),
-      averageEngagement: Math.round(totalEngagement / insights.length),
-      media: insights,
-    };
-  };
+  //   return {
+  //     totalPosts: insights.length,
+  //     totalReach,
+  //     totalViews,
+  //     totalEngagement,
+  //     totalImpressions,
+  //     averageReach: Math.round(totalReach / insights.length),
+  //     averageViews: Math.round(totalViews / insights.length),
+  //     averageEngagement: Math.round(totalEngagement / insights.length),
+  //     media: insights,
+  //   };
+  // };
 
   publishMedia = async (
     accessToken: string,
